@@ -5,7 +5,7 @@ import {
   useEffect,
   useState,
   type ReactNode,
-} from "react";
+} from 'react';
 
 export interface Notes {
   id: string;
@@ -18,10 +18,10 @@ export interface Notes {
 
 interface NotesContextType {
   notes: Notes[];
-  addNote: (note: Omit<Notes, "id" | "createdAt" | "updatedAt">) => void;
+  addNote: (note: Omit<Notes, 'id' | 'createdAt' | 'updatedAt'>) => void;
   updateNote: (
     id: string,
-    updates: Partial<Omit<Notes, "id" | "createdAt" | "updatedAt">>
+    updates: Partial<Omit<Notes, 'id' | 'createdAt' | 'updatedAt'>>
   ) => void;
   deleteNote: (id: string) => void;
 }
@@ -30,17 +30,17 @@ const NotesContext = createContext<NotesContextType | undefined>(undefined);
 
 export const NotesProvider = ({ children }: { children: ReactNode }) => {
   const [notes, setNotes] = useState<Notes[]>(() => {
-    const saved = localStorage.getItem("notes");
+    const saved = localStorage.getItem('notes');
     return saved ? JSON.parse(saved) : [];
   });
 
   useEffect(() => {
-    localStorage.setItem("notes", JSON.stringify(notes));
+    localStorage.setItem('notes', JSON.stringify(notes));
   }, [notes]);
 
-  const addNote = (note: Omit<Notes, "id" | "createdAt" | "updatedAt">) => {
+  const addNote: NotesContextType['addNote'] = (note) => {
     const newNote: Notes = {
-      id: Date.now().toString(),
+      id: crypto.randomUUID(),
       ...note,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
@@ -48,10 +48,7 @@ export const NotesProvider = ({ children }: { children: ReactNode }) => {
     setNotes((prev) => [newNote, ...prev]);
   };
 
-  const updateNote = (
-    id: string,
-    updates: Partial<Omit<Notes, "id" | "createdAt" | "updatedAt">>
-  ) => {
+  const updateNote: NotesContextType['updateNote'] = (id, updates) => {
     setNotes((prev) =>
       prev.map((note) =>
         note.id === id
@@ -61,7 +58,7 @@ export const NotesProvider = ({ children }: { children: ReactNode }) => {
     );
   };
 
-  const deleteNote = (id: string) => {
+  const deleteNote: NotesContextType['deleteNote'] = (id) => {
     setNotes((prev) => prev.filter((note) => note.id !== id));
   };
 
@@ -74,6 +71,6 @@ export const NotesProvider = ({ children }: { children: ReactNode }) => {
 
 export const useNotes = () => {
   const context = useContext(NotesContext);
-  if (!context) throw new Error("useNotes must be used withing the Provider");
+  if (!context) throw new Error('useNotes must be used withing the Provider');
   return context;
 };
