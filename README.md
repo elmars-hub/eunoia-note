@@ -14,7 +14,7 @@ Local Storage for persistence
 
 # Clone the project
 
-git clone https://github.com/yourusername/eunoia.git
+git clone https://github.com/elmars-hub/eunoia.git
 
 # Navigate into the folder
 
